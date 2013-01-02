@@ -151,7 +151,7 @@ class DB_Utils(object):
 class Word_Poster(object):
     """Class to handle posting a retrieved word"""
 
-    _TWITTER_NAME = "Vulgar Brit"
+    _TWITTER_NAME = "1811 Vulgar Words"
 
     # Let's say we're posting from London
     _MY_LATITUDE = 51.5171
