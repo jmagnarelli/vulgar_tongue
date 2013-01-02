@@ -1,18 +1,32 @@
-#!/usr/bin/python2
+#==============================================================================
+#   Copyright 2013 James Magnarelli
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+#==============================================================================
 
 """vulgar.py: A very naughty twitter bot"""
 
 __author__ = "James Magnarelli"
-__version__ = "pre-alpha"
+__version__ = "1.0"
 
 
 #==============================================================================
 # Code written by James Magnarelli (GitHub user jmagnare)
-# All rights reserved. Not licensed for use without express permission.
 #==============================================================================
 
 # To the best of my knowledge, this file conforms to the Google Python Style
 # Guide (http://google-styleguide.googlecode.com/svn/trunk/pyguide.html)
+
 # TODO (jmagnare): Add logging
 
 from argparse import ArgumentParser
