@@ -10,7 +10,9 @@ __version__ = "pre-alpha"
 # Code written by James Magnarelli (GitHub user jmagnare)
 # All rights reserved. Not licensed for use without express permission.
 #==============================================================================
-# TODO (jmagnare): Docstrings everywhere
+
+# To the best of my knowledge, this file conforms to the Google Python Style
+# Guide (http://google-styleguide.googlecode.com/svn/trunk/pyguide.html)
 # TODO (jmagnare): Add logging
 
 from argparse import ArgumentParser
@@ -21,7 +23,7 @@ from twitter import Twitter, OAuth
 
 
 class Vulgar_Exception(Exception):
-
+    """Base class for exceptions in this project"""
     def __init__(self, value):
         self.value = value
 
@@ -33,9 +35,17 @@ class Text_Utils(object):
     """Class to handle interaction with the textual dictionary"""
 
     _VULGAR_DICT_PATH = "../data/vulgar.txt"
+    """The location of the raw dictionary text"""
 
     @staticmethod
     def get_dictionary_dict():
+        """Return a dict containing terms and definitions from the raw text
+
+        @return: A dict of form {"term": "definition",
+                                "term": "definition"...} mapping all terms
+                                in the raw dictionary text to their
+                                definitions"""
+
         # Open the dict file for reading ('with' will close when finished)
         with open(Text_Utils._VULGAR_DICT_PATH) as f:
             # Read it into memory
@@ -52,7 +62,13 @@ class Text_Utils(object):
         vulgar_dict = {}
 
         def __format_raw_def(defin):
-            """Strip newlines and extraneous whitespace from raw definitions"""
+            """Strip newlines and extraneous whitespace from the given text
+
+            @param defin: The text from which to strip newlines and extra
+                            whitespace
+
+            @return: The given text, with the undesired characters removed"""
+
             temp = defin.replace("  ", " ")
             temp = temp.replace("\n", " ")
             temp = temp.strip()
@@ -72,12 +88,16 @@ class DB_Utils(object):
     """Class to handle retrieving words from the vulgar dictionary"""
 
     _VULGAR_DB_PATH = "../data/vulgardb"
-
-    def __init__(self):
-        """Initialize a WordGetter, loading the dictionary file"""
-        pass
+    """The location of the dictionary database, if it exists"""
 
     def _build_new_db(self, conn):
+        """Construct a new dictionary database from raw text file
+
+        Commits changes to disk when done.
+
+        @param conn: An initialized sqlite3 connection to the desired DB
+                    file"""
+
         c = conn.cursor()
 
         # Create the table
@@ -94,7 +114,12 @@ class DB_Utils(object):
         conn.commit()
 
     def _handle_used_db(self, conn):
-        """Marks all terms in dictionary db as unused"""
+        """Marks all terms in dictionary db as unused
+
+        This will only be run once the entire dictionary has been posted.
+
+        @param conn: An initialized sqlite3 connection to the database file"""
+
         c = conn.cursor()
         c.execute("UPDATE vulgar SET used=0")
 
@@ -102,6 +127,11 @@ class DB_Utils(object):
         conn.commit()
 
     def _open_vulgar_db(self):
+        """Establish a sqlite3 connection to the database file
+
+        NOTE: Builds the database if it does not exist
+
+        @return: A sqlite3.Connection for the term database file"""
 
         conn = sqlite3.connect(DB_Utils._VULGAR_DB_PATH)
 
@@ -115,7 +145,9 @@ class DB_Utils(object):
         return conn
 
     def get_new_word(self):
-        """Return an unused (word, definition) from the dict, and note use"""
+        """Return an unused (word, definition) from the dict, and note its use
+
+        @return: An unused (word, definition) pairing from the term database"""
 
         # Open our dictionary
         conn = self._open_vulgar_db()
@@ -158,6 +190,12 @@ class Word_Poster(object):
     _MY_LONGITUDE = -0.1062
 
     def __init__(self, key, csecret, token, asecret):
+        """Initialize a Word_Poster, connecting to Twitter via OAuth
+
+        @param key: The OAuth consumer key
+        @param csecret: The OAuth consumer secret
+        @param token: The OAuth access token
+        @param asecret: The OAuth access token secret"""
 
         # Establish a connection to twitter
         self.conn = Twitter(auth=OAuth(token, asecret, key, csecret))
@@ -169,6 +207,11 @@ class Word_Poster(object):
             raise Vulgar_Exception("Failed to connect to Twitter")
 
     def post(self, term_pairing):
+        """Post the given (term, definition) pairing to Twitter
+
+        NOTE: Concatenates the two and truncates to 140 characters.
+
+        @param term_pairing: The (term, definition) pairing to post."""
 
         # Append term and definition
         post_text_full = term_pairing[0] + " " + term_pairing[1]
@@ -183,7 +226,13 @@ class Word_Poster(object):
 
 
 def post_word(key, csecret, token, asecret):
-    """Post a new vulgar word with the given credentials"""
+    """Post a new vulgar word with the given OAuth information
+
+    @param key: The OAuth consumer key
+    @param csecret: The OAuth consumer secret
+    @param token: The OAuth access token
+    @param asecret: The OAuth access token secret"""
+
     poster = Word_Poster(key, csecret, token, asecret)
     db = DB_Utils()
 
