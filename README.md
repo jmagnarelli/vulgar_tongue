@@ -4,7 +4,7 @@ Vulgar Tongue
 This is a Twitter bot that tweets a word of the day from Francis Grose's 1811
 Dictionary of the Vulgar Tongue.
 
-I found the book on [Project Gutenberg](http://www.gutenberg.org) and I just
+I found the book on [Project Gutenberg](http://www.gutenberg.org), and I just
 couldn't resist.
 
 ------
